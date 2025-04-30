@@ -124,11 +124,15 @@ def remove_car(conn, cur):
             else:
                 validCarID = True
         
-        query = """
+        query1 = """
             DELETE FROM CAR WHERE car_id = %s
             """
+        query2 = """
+            DELETE FROM MODEL WHERE car_id = %s
+            """
         
-        sqlActions.modifyData(conn, cur, query, [car_id])
+        sqlActions.modifyData(conn, cur, query1, [car_id])
+        sqlActions.modifyData(conn, cur, query2, [car_id])
     else:
         notEmpty = False
         brand = ""
@@ -140,13 +144,17 @@ def remove_car(conn, cur):
             else:
                 notEmpty = True
         
-        query = """
+        query1 = """
+            SELECT DISTINCT car_id FROM CAR WHERE brand = %s
+            """
+        query2 = """
             DELETE FROM CAR WHERE brand = %s
             """
         
         sqlActions.modifyData(conn, cur, query, [brand])
         
     print("Delete car(s) successfully!") 
+
 
 
 def command1(conn, cur):
@@ -168,6 +176,9 @@ def command1(conn, cur):
             add_car(conn, cur)
         else:
             remove_car(conn, cur)
+    else:
+        if (action == "1" or action == "insert"):
+            add_model(conn, cur)
         
 
 
