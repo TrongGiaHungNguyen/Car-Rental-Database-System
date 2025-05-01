@@ -2,22 +2,27 @@ def modifyData(conn, cur, query, parameters = []):
     try:
         cur.execute(query, parameters)
         conn.commit()
+        print("Success!")
     except Exception as e:
-        print(e)
+        print("__ERROR__:", e)
+        conn.rollback()
 
 def fetchAllData(cur, query, parameters=[]):
     try:
         cur.execute(query, parameters)
-        return cur.fetchall()  # or use cur.fetchone() if expecting one row
+        returnVal = cur.fetchall()
+        print("Success!")
+        return returnVal
     except Exception as e:
-        print(e)
+        print("__ERROR__:", e)
         return None
     
 def fetchOneData(cur, query, parameters=[]):
     try:
         cur.execute(query, parameters)
-        return cur.fetchone()  # or use cur.fetchone() if expecting one row
+        returnVal = cur.fetchone()
+        return returnVal
     except Exception as e:
-        print(e)
+        print("__ERROR__:", e)
         return None
     

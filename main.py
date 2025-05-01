@@ -1,6 +1,7 @@
 import psycopg2
 import re
 import manager
+import driver
 
 
 def userMenu():
@@ -16,7 +17,7 @@ def connectDatabase():
     conn = psycopg2.connect(
         dbname="CS480_PROJECT",
         user="postgres",
-        password="",
+        password="Jim010422Nguyen",
         host="localhost",      # or an IP/domain name
         port="5432"            # default PostgreSQL port
     )
@@ -36,6 +37,8 @@ def main(conn, cur):
         userChoice = userChoice.strip()
         if (userChoice == "1"):
             manager.main_manager(conn, cur)
+        elif (userChoice == '3'):
+            driver.main_driver(conn, cur)
 
     cur.close()
     conn.close()

@@ -1,7 +1,11 @@
 CREATE TABLE MANAGER (
     manager_name VARCHAR(255) NOT NULL,
-    ssn CHAR(11) PRIMARY KEY NOT NULL,
-    manager_email VARCHAR(255) NOT NULL
+    ssn CHAR(11) PRIMARY KEY NOT NULL CHECK (
+        ssn ~ '^\d{3}-\d{2}-\d{4}$'
+    ),
+    manager_email VARCHAR(255) NOT NULL CHECK (
+        manager_email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
+    )
 );
 
 CREATE TABLE CLIENT (
@@ -36,10 +40,10 @@ CREATE TABLE MODEL (
     construction_year INT NOT NULL,
     transmission_type VARCHAR(255) NOT NULL,
     model_id INT NOT NULL,
-    car_id INT NOT NULL,
+    car_id INT NOT NULL CHECK (car_id BETWEEN 10000 AND 99999),
     PRIMARY KEY (model_id, car_id),
     FOREIGN KEY (car_id) REFERENCES CAR(car_id)
-);
+);  
 
 CREATE TABLE DRIVER (
     driver_name VARCHAR(255) PRIMARY KEY NOT NULL,
