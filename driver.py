@@ -62,6 +62,29 @@ def command1(conn, cur, info):
     sqlActions.modifyData(conn, cur, query, [address_number, road_name, city, info])
 
 
+def command2(conn, cur):
+    print("\nCar model lis: ")
+    query = """
+        SELECT * FROM MODEL;
+        """
+    
+    queryResult = sqlActions.fetchAllData(cur, query)
+    for i, item in enumerate(queryResult):
+        print(f"{i + 1}. {item[0]} {item[1]} {item[2]} {item[3]} {item[4]}")
+
+
+def command3(conn, cur, info):
+    print("\nEnter car information: ")
+    modelID = input("Model ID: ")
+    carID = input("Car ID: ")
+
+    query = """
+        INSERT INTO DRIVE (model_id, car_id, driver_name) VALUES (%s, %s, %s);
+        """
+    
+    sqlActions.modifyData(conn, cur, query, [modelID, carID, info])
+
+
 def main_driver(conn, cur):
     info = login(conn, cur)
     if (info == ""):
@@ -74,3 +97,7 @@ def main_driver(conn, cur):
 
         if (userInput == '1'):
             command1(conn, cur, info)
+        elif (userInput == '2'):
+            command2(conn, cur)
+        elif (userInput == '3'):
+            command3(conn, cur, info)
