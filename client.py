@@ -48,12 +48,31 @@ def login(cur):
 
 
 def show_models(cur):
-    rows = sqlActions.fetchAllData(cur, ("SELECT model_id, car_id, color, transmission_type, construction_year FROM MODEL"), [])
+    date = input("Enter desired rent date (YYYY-MM-DD): ").strip()
+    query = """
+    SELECT m.model_id, m.car_id, m.color, m.transmission_type, m.construction_year FROM MODEL m
+    WHERE NOT EXISTS (SELECT 1 FROM RENT r WHERE r.model_id = m.model_id 
+                       AND r.car_id = m.car_id 
+                       AND r.rent_date = %s
+    )
+    AND EXISTS (SELECT 1 FROM DRIVE d WHERE d.model_id = m.model_id
+                       AND d.car_id = m.car_id
+                       AND NOT EXISTS (SELECT 1 FROM RENT r2 WHERE r2.driver_name = d.driver_name
+                                       AND r2.rent_date   = %s)
+    )
+    ORDER BY m.car_id, m.model_id;
+    """
+    rows = sqlActions.fetchAllData(cur, query, [date, date])
 
-    print("\nAll models:")
-    for mid, cid, color, trans, yr in rows:
-        print(f" Model {mid} (Car {cid}): {color}, {trans}, {yr}")
+    if not rows:
+        print(f"\nNo models available on {date}.\n")
+        return []
+
+    print(f"\nAvailable models on {date}:")
+    for mid, cid, color, trans, year in rows:
+        print(f"  Model {mid} (Car {cid}): {color}, {trans}, {year}")
     print()
+    return rows
 
 
 
