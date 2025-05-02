@@ -215,13 +215,25 @@ def add_driver(conn, cur):
     print("Address information:")
     addNum = input("Address number: ")
     roadName = input("Road name: ")
-    city = input ("City: ")
+    city = input("City: ")
 
-    query = """
-        INSERT INTO DRIVER (driver_name, address_number, road_name, city) VALUES (%s, %s, %s, %s)
+    address_check_query = """
+                SELECT * FROM ADDRESS
+                WHERE road_name = %s AND address_number = %s AND city = %s;
+            """
+    result = sqlActions.fetchOneData(cur, address_check_query, [roadName, addNum, city])
+
+    if result is None:
+        insert_address_query = """
+            INSERT INTO ADDRESS (road_name, address_number, city) VALUES (%s, %s, %s);
         """
+        sqlActions.modifyData(conn, cur, insert_address_query, [roadName, addNum, city])
 
-    sqlActions.modifyData(conn, cur, query, [name, addNum, roadName, city])
+    insert_driver_query = """
+        INSERT INTO DRIVER (driver_name, address_number, road_name, city)
+        VALUES (%s, %s, %s, %s);
+    """
+    sqlActions.modifyData(conn, cur, insert_driver_query, [name, addNum, roadName, city])
 
 
 def remove_driver(conn, cur):
@@ -283,7 +295,7 @@ def command4(conn, cur):
     print("\nCar model list:")
     for i, item in enumerate(allModels):
         numUsed = sqlActions.fetchOneData(cur, query2, [item[0], item[1]])
-        print(f"{i + 1}. {item[0]} {item[1]} {item[2]} {item[3]} {item[4]} {numUsed[0]}")
+        print(f"{i + 1}. CarID: {item[0]} - ModelID: {item[1]} - Color: {item[2]} - Tranmission type: {item[3]} - Year: {item[4]} - Number of rents: {numUsed[0]}")
 
 
 def command5(conn, cur):
@@ -311,7 +323,7 @@ def command5(conn, cur):
         if (avgRating[0] is None):
             avgRating = ('N/A',)
 
-        print(f"{i + 1}. {item[0]} {numRent[0]} {avgRating[0]}")
+        print(f"{i + 1}. Driver name: {item[0]} - Number of rents: {numRent[0]} - Avg rating: {avgRating[0]}")
 
 
 def command6(conn, cur):
@@ -331,7 +343,7 @@ def command6(conn, cur):
 
     print("\nResult")
     for i, item in enumerate(queryResult):
-        print(f"{i + 1}. {item[0]} {item[1]}")
+        print(f"{i + 1}. Client name: {item[0]} - Email: {item[1]}")
 
 
 def tasks(conn, cur):
