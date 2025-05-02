@@ -275,14 +275,14 @@ def command4(conn, cur):
 
     query2 = """
         SELECT COUNT(*) FROM RENT
-        WHERE car_id = %s 
+        WHERE car_id = %s and model_id = %s
         """
 
     allModels = sqlActions.fetchAllData(cur, query1)
     
     print("\nCar model list:")
     for i, item in enumerate(allModels):
-        numUsed = sqlActions.fetchOneData(cur, query2, [item[0]])
+        numUsed = sqlActions.fetchOneData(cur, query2, [item[0], item[1]])
         print(f"{i + 1}. {item[0]} {item[1]} {item[2]} {item[3]} {item[4]} {numUsed[0]}")
 
 
@@ -311,7 +311,7 @@ def command5(conn, cur):
         if (avgRating[0] is None):
             avgRating = ('N/A',)
 
-        print(f"{i + 1}. {numRent[0]} {avgRating[0]}")
+        print(f"{i + 1}. {item[0]} {numRent[0]} {avgRating[0]}")
 
 
 def command6(conn, cur):

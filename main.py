@@ -2,6 +2,7 @@ import psycopg2
 import re
 import manager
 import driver
+import client
 
 
 def userMenu():
@@ -37,6 +38,8 @@ def main(conn, cur):
         userChoice = userChoice.strip()
         if (userChoice == "1"):
             manager.main_manager(conn, cur)
+        elif (userChoice == "2"):
+            client.main_client(conn, cur)
         elif (userChoice == '3'):
             driver.main_driver(conn, cur)
 
